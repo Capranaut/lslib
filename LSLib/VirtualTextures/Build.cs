@@ -16,7 +16,6 @@ public class TileSetDescriptor
     public string RootPath;
     public string SourceTexturePath;
     public string VirtualTexturePath;
-    public bool ProductionQuality = true;
 
     public void Load(string path)
     {
@@ -982,7 +981,7 @@ public class TileSetBuilder
                 OnStepProgress(nextTile++, numTiles);
                 if (tile.DuplicateOf == null)
                 {
-                    Compressor.Compress(tile, !Config.FastBuild);
+                    Compressor.Compress(tile, Config.FastBuild);
                 }
             }
         }
