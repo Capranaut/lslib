@@ -722,7 +722,7 @@ public class Exporter
 
         foreach (var track in Root.TrackGroups ?? [])
         {
-            if (track.TransformTracks.Count > 0)
+            if (track.TransformTracks != null && track.TransformTracks.Count > 0)
             {
                 hasSkinnedVerts = true;
             }
