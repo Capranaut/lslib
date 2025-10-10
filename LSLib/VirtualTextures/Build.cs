@@ -1021,7 +1021,7 @@ public class TileSetBuilder
                             var packedTile = new GTSPackedTileID((uint)layer, (uint)level, (uint)x, (uint)y);
                             packedTileIds.Add(packedTile);
 
-                            var tileKey = (long)tile.ChunkIndex
+                            var tileKey = (long)tile.PageFileIndex
                                 | ((long)tile.PageIndex << 16)
                                 | ((long)tile.ChunkIndex << 32);
                             if (flatTileMap.TryGetValue(tileKey, out uint dupTileIdx))
