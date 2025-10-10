@@ -16,6 +16,7 @@ public class TileSetDescriptor
     public string RootPath;
     public string SourceTexturePath;
     public string VirtualTexturePath;
+    public bool ProductionQuality = true;
 
     public void Load(string path)
     {
@@ -58,6 +59,7 @@ public class TileSetDescriptor
                     case "EmbedMips": Config.EmbedMips = Boolean.Parse(value); break;
                     case "EmbedTopLevelMips": Config.EmbedTopLevelMips = Boolean.Parse(value); break;
                     case "ZeroBorders": Config.ZeroBorders = Boolean.Parse(value); break;
+                    case "FastBuild": Config.FastBuild = Boolean.Parse(value); break;
                     default: throw new InvalidDataException($"Unsupported configuration key: {key}");
                 }
             }
@@ -173,6 +175,7 @@ public class TileSetConfiguration
     public bool EmbedMips = true;
     public bool EmbedTopLevelMips = true;
     public bool ZeroBorders = false;
+    public bool FastBuild = false;
 }
 
 public class BuildLayerTexture
@@ -979,7 +982,7 @@ public class TileSetBuilder
                 OnStepProgress(nextTile++, numTiles);
                 if (tile.DuplicateOf == null)
                 {
-                    Compressor.Compress(tile);
+                    Compressor.Compress(tile, !Config.FastBuild);
                 }
             }
         }
