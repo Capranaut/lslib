@@ -487,17 +487,26 @@ public class GLTFImporter
     {
         if (!joint.HasAnimations) return null;
 
-        var translate = joint.Translation?.Tracks.GetValueOrDefault(animName);
-        var rotate = joint.Rotation?.Tracks.GetValueOrDefault(animName);
-        var scale = joint.Scale?.Tracks.GetValueOrDefault(animName);
+        var translate = (CurveBuilder<Vector3>)joint.Translation?.Tracks.GetValueOrDefault(animName);
+        var rotate = (CurveBuilder<Quaternion>)joint.Rotation?.Tracks.GetValueOrDefault(animName);
+        var scale = (CurveBuilder<Vector3>)joint.Scale?.Tracks.GetValueOrDefault(animName);
 
         if (translate == null && rotate == null && scale == null) return null;
 
+        var maxDegree = Math.Max(
+            Math.Max(
+                translate?.MaxDegree ?? 0,
+                rotate?.MaxDegree ?? 0
+            ),
+            scale?.MaxDegree ?? 0
+        );
+
         var keyframes = new KeyframeTrack();
+        keyframes.Interpolated = (maxDegree > 0);
 
         if (translate != null)
         {
-            var curve = (CurveBuilder<Vector3>)translate;
+            var curve = translate;
             foreach (var key in curve.Keys)
             {
                 var t = curve.GetPoint(key);
@@ -507,7 +516,7 @@ public class GLTFImporter
 
         if (rotate != null)
         {
-            var curve = (CurveBuilder<Quaternion>)rotate;
+            var curve = rotate;
             foreach (var key in curve.Keys)
             {
                 var q = curve.GetPoint(key);
@@ -517,7 +526,7 @@ public class GLTFImporter
 
         if (scale != null)
         {
-            var curve = (CurveBuilder<Vector3>)scale;
+            var curve = scale;
             foreach (var key in curve.Keys)
             {
                 var s = curve.GetPoint(key);

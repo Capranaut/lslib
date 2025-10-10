@@ -139,6 +139,7 @@ public class Keyframe
 public class KeyframeTrack
 {
     public SortedList<Single, Keyframe> Keyframes = [];
+    public bool Interpolated = true;
 
     private static Int32 FindFrame<T>(IList<T> list, T value, IComparer<T> comparer = null)
     {
@@ -613,7 +614,10 @@ public class TransformTrack
         else
         {
             var posCurve = new DaK32fC32f();
-            posCurve.CurveDataHeader_DaK32fC32f = new CurveDataHeader { Format = (int)CurveFormat.DaK32fC32f, Degree = 2 };
+            posCurve.CurveDataHeader_DaK32fC32f = new CurveDataHeader { 
+                Format = (int)CurveFormat.DaK32fC32f, 
+                Degree = (byte)(keyframes.Interpolated ? 2 : 0)
+            };
             posCurve.SetKnots(translateTimes);
             posCurve.SetPoints(translations);
             track.PositionCurve = new AnimationCurve { CurveData = posCurve };
@@ -657,7 +661,10 @@ public class TransformTrack
         else
         {
             var rotCurve = new DaK32fC32f();
-            rotCurve.CurveDataHeader_DaK32fC32f = new CurveDataHeader { Format = (int)CurveFormat.DaK32fC32f, Degree = 2 };
+            rotCurve.CurveDataHeader_DaK32fC32f = new CurveDataHeader {
+                Format = (int)CurveFormat.DaK32fC32f,
+                Degree = (byte)(keyframes.Interpolated ? 2 : 0)
+            };
             rotCurve.SetKnots(rotationTimes);
             rotCurve.SetQuaternions(rotations);
             track.OrientationCurve = new AnimationCurve { CurveData = rotCurve };
@@ -704,7 +711,10 @@ public class TransformTrack
         else
         {
             var scaleCurve = new DaK32fC32f();
-            scaleCurve.CurveDataHeader_DaK32fC32f = new CurveDataHeader { Format = (int)CurveFormat.DaK32fC32f, Degree = 2 };
+            scaleCurve.CurveDataHeader_DaK32fC32f = new CurveDataHeader {
+                Format = (int)CurveFormat.DaK32fC32f,
+                Degree = (byte)(keyframes.Interpolated ? 2 : 0)
+            };
             scaleCurve.SetKnots(scaleTimes);
             scaleCurve.SetMatrices(scales);
             track.ScaleShearCurve = new AnimationCurve { CurveData = scaleCurve };
@@ -721,6 +731,10 @@ public class TransformTrack
     public KeyframeTrack ToKeyframes()
     {
         var track = new KeyframeTrack();
+
+        track.Interpolated = OrientationCurve.Degree > 0
+            || PositionCurve.Degree > 0
+            || ScaleShearCurve.Degree > 0;
 
         OrientationCurve.CurveData.ExportKeyframes(track, AnimationCurveData.ExportType.Rotation);
         PositionCurve.CurveData.ExportKeyframes(track, AnimationCurveData.ExportType.Position);

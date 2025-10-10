@@ -340,19 +340,19 @@ public class GLTFExporter
             if (frame.HasTranslation)
             {
                 var v = frame.Translation;
-                translate.SetPoint(time, v.ToNumerics(), true);
+                translate.SetPoint(time, v.ToNumerics(), keyframes.Interpolated);
             }
 
             if (frame.HasRotation)
             {
                 var q = frame.Rotation;
-                rotation.SetPoint(time, q.ToNumerics(), true);
+                rotation.SetPoint(time, q.ToNumerics(), keyframes.Interpolated);
             }
 
             if (frame.HasScaleShear)
             {
                 var m = frame.ScaleShear;
-                scale.SetPoint(time, new Vector3(m[0,0], m[1,1], m[2,2]), true);
+                scale.SetPoint(time, new Vector3(m[0,0], m[1,1], m[2,2]), keyframes.Interpolated);
             }
         }
     }
