@@ -164,12 +164,25 @@ public class GLTFExporter
 
             node.LocalTransform = ToGLTFTransform(joint.Transform);
             var t = joint.InverseWorldTransform;
+
             var iwt = new Matrix4x4(
                 t[0], t[1], t[2], t[3],
                 t[4], t[5], t[6], t[7],
                 t[8], t[9], t[10], t[11],
                 t[12], t[13], t[14], t[15]
             );
+
+            // "Fix" case where the IWT stored in the GR2 accumulates precision errors
+            if (Math.Abs(iwt.M14) > 0.001f || Math.Abs(iwt.M24) > 0.001f || Math.Abs(iwt.M34) > 0.001f || Math.Abs(iwt.M44 - 1.0f) > 0.001f)
+            {
+                throw new InvalidDataException($"IWT on joint '{joint.Name}' is not affine");
+            }
+
+            iwt.M14 = 0.0f;
+            iwt.M24 = 0.0f;
+            iwt.M34 = 0.0f;
+            iwt.M44 = 1.0f;
+
             joints.Add((node, iwt));
             names.Add(joint.Name, node);
         }
