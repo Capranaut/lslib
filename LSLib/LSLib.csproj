@@ -57,26 +57,26 @@
     </LexFile>
   </ItemGroup>
   <ItemGroup Label="YaccLexPack"><!--Not technically neccisarry, just a qol change to nest generated .cs files in solution explorer-->
-    <None Include="LS\Story\GoalParser\Goal.yy.cs">
+	<Compile Update="LS\Story\GoalParser\Goal.yy.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>LS\Story\GoalParser\Goal.yy</DependentUpon>
-    </None>
-    <None Include="LS\Story\GoalParser\Goal.lex.cs">
+    </Compile>
+	<Compile Update="LS\Story\GoalParser\Goal.lex.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>LS\Story\GoalParser\Goal.lex</DependentUpon>
-    </None>
-    <None Include="LS\Story\HeaderParser\StoryHeader.yy.cs">
+    </Compile>
+	<Compile Update="LS\Story\HeaderParser\StoryHeader.yy.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>LS\Story\HeaderParser\StoryHeader.yy</DependentUpon>
-    </None>
-    <None Include="LS\Story\HeaderParser\StoryHeader.lex.cs">
+    </Compile>
+	<Compile Update="LS\Story\HeaderParser\StoryHeader.lex.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>LS\Story\HeaderParser\StoryHeader.lex</DependentUpon>
-    </None>
+    </Compile>
     <Compile Update="GplexBuffers.cs"><!--Not sure these last two statements are doing anything-->
       <AutoGen>True</AutoGen>
     </Compile>
