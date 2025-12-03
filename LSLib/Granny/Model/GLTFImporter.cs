@@ -183,7 +183,14 @@ public class GLTFImporter
             var jointIndex = skeleton.Bones.FindIndex((bone) => bone.Name == binding);
             if (jointIndex == -1)
             {
-                throw new ParsingException($"Couldn't find bind bone {binding} in parent skeleton.");
+                if (binding == "neutral_bone")
+                {
+                    throw new ParsingException($"Mesh '{skin.Name}' is bound to bone 'neutral_bone'; this likely means that some vertices in the mesh are missing bone weights.");
+                }
+                else
+                {
+                    throw new ParsingException($"Couldn't find bind bone {binding} in parent skeleton.");
+                }
             }
 
             ij.SkeletonJoints.Add(jointIndex);
