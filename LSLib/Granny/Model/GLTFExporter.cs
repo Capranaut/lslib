@@ -248,7 +248,7 @@ public class GLTFExporter
         }
     }
 
-    private void ExportMeshExtensions(Mesh mesh, GLTFMeshExtensions ext)
+    private void ExportMeshExtensions(Mesh mesh, GLTFMeshExtensions ext, Skeleton skeleton)
     {
         var extd = mesh.ExtendedData;
         var user = extd.UserMeshProperties;
@@ -266,7 +266,7 @@ public class GLTFExporter
         ext.ExportOrder = mesh.ExportOrder;
         ext.LOD = (user.Lod[0] >= 0) ? user.Lod[0] : 0;
         ext.LODDistance = (user.LodDistance[0] < 100000000.0f) ? user.LodDistance[0] : 0.0f;
-        if (!mesh.IsSkinned() && mesh.BoneBindings != null && mesh.BoneBindings.Count == 1)
+        if (!mesh.IsSkinned() && mesh.BoneBindings != null && mesh.BoneBindings.Count == 1 && skeleton != null && !skeleton.IsDummy)
         {
             ext.ParentBone = mesh.BoneBindings[0].BoneName;
         }
@@ -299,7 +299,7 @@ public class GLTFExporter
                 if (mesh.Name == grMesh.Name)
                 {
                     var meshExt = mesh.UseExtension<GLTFMeshExtensions>();
-                    ExportMeshExtensions(grMesh, meshExt);
+                    ExportMeshExtensions(grMesh, meshExt, root.Skeletons?.FirstOrDefault());
 
                     if (grMesh.MorphTargets != null && grMesh.MorphTargets.Count > 0)
                     {
