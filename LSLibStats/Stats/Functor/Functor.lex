@@ -73,7 +73,7 @@ nonseparator [^,;:()\[\]! ]
 "!"          return (int)'!';
 "-"          return (int)'-';
 "."          return (int)'.';
-[ \t]        ;
+[ \t\r\n]    ;
 
 {letter}({namechar})+ { yylval = MakeLiteral(yytext); return (int)FunctorTokens.NAME; }
 (-)?{digit}({digit})* { yylval = MakeLiteral(yytext); return (int)FunctorTokens.INTEGER; }

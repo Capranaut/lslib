@@ -342,6 +342,12 @@ public class LuaExpressionValidator(bool allowEmpty = false) : StatStringValidat
     {
         if (allowEmpty && value.Trim().Length == 0) return;
 
+        // Lua ignores trailing ';' at the end of the expression
+        if (value.Length > 0 && value[^1] == ';')
+        {
+            value = value[..^1];
+        }
+
         var valueBytes = Encoding.UTF8.GetBytes(value);
         using var buf = new MemoryStream(valueBytes);
         var scanner = new Lua.StatLuaScanner();

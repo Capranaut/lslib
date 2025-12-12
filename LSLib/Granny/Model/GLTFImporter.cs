@@ -183,7 +183,14 @@ public class GLTFImporter
             var jointIndex = skeleton.Bones.FindIndex((bone) => bone.Name == binding);
             if (jointIndex == -1)
             {
-                throw new ParsingException($"Couldn't find bind bone {binding} in parent skeleton.");
+                if (binding == "neutral_bone")
+                {
+                    throw new ParsingException($"Mesh '{skin.Name}' is bound to bone 'neutral_bone'; this likely means that some vertices in the mesh are missing bone weights.");
+                }
+                else
+                {
+                    throw new ParsingException($"Couldn't find bind bone {binding} in parent skeleton.");
+                }
             }
 
             ij.SkeletonJoints.Add(jointIndex);
@@ -350,19 +357,21 @@ public class GLTFImporter
         }
         else if (ext.ParentBone != "")
         {
-            if (skeleton == null)
+            if (skeleton != null)
             {
-                throw new ParsingException($"Mesh '{name}' has a parent bone set ({ext.ParentBone}) but the glTF file contains no skeleton");
-            }
+                var parentBone = skeleton.Bones.FindIndex((bone) => bone.Name == ext.ParentBone);
+                if (parentBone == -1)
+                {
+                    throw new ParsingException($"Mesh '{name}' has a parent bone ({ext.ParentBone}) that does not exist in the skeleton");
+                }
 
-            var parentBone = skeleton.Bones.FindIndex((bone) => bone.Name == ext.ParentBone);
-            if (parentBone == -1)
+                influencingJoints = new();
+                influencingJoints.SkeletonJoints = [parentBone];
+            }
+            else
             {
-                throw new ParsingException($"Mesh '{name}' has a parent bone ({ext.ParentBone}) that does not exist in the skeleton");
+                Utils.Warn($"Mesh '{name}' has a parent bone set ({ext.ParentBone}) but the glTF file contains no skeleton");
             }
-
-            influencingJoints = new();
-            influencingJoints.SkeletonJoints = [parentBone];
         }
 
         var converted = new GLTFMesh();
